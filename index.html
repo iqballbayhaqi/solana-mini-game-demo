@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solana</title>
+    <link
+      href="https://fonts.cdnfonts.com/css/arcade-classic"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      * {
+        font-family: "ArcadeClassic", sans-serif;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      #fadeElement1,
+      #fadeElement2,
+      #fadeElement3 {
+        transition: opacity 0.5s ease-in-out;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex justify-center items-center h-full bg-black">
+      <div
+        id="fadeElement1"
+        class="border-[20px] rounded-lg py-[20px] px-[100px] opacity-0 hidden"
+      >
+        <div class="flex flex-col justify-center items-center">
+          <img
+            src="https://cryptologos.cc/logos/solana-sol-logo.png"
+            alt="Solana Logo"
+            class="h-24 w-24"
+          />
+          <div class="flex items-center gap-3 pt-[50px] cursor-pointer">
+            <img
+              src="https://cryptologos.cc/logos/solana-sol-logo.png"
+              alt="Solana Logo"
+              class="h-7"
+            />
+            <p class="text-3xl text-white animate-pulse" onclick="start()">Press Start</p>
+          </div>
+          <p class="pt-[100px] text-white">© Play Solana</p>
+        </div>
+      </div>
+
+      <div
+        id="fadeElement2"
+        class="border-[20px] rounded-lg py-[20px] px-[100px] opacity-0 hidden"
+      >
+        <div class="py-[65px] flex flex-col items-center justify-center">
+          <p
+            class="cursor-pointer text-3xl text-white"
+            onclick="selectMenu(1);goToScene()"
+          >
+            > Play <
+          </p>
+          <p
+            class="cursor-pointer text-3xl text-slate-500"
+            onclick="selectMenu(2);goToScene()"
+          >
+            > Wallet <
+          </p>
+          <p
+            class="cursor-pointer text-3xl text-slate-500"
+            onclick="selectMenu(3);goToScene()"
+          >
+            > Dex <
+          </p>
+          <p
+            class="cursor-pointer text-3xl text-slate-500"
+            onclick="selectMenu(4);goToScene()"
+          >
+            > Claim <
+          </p>
+          <p
+            class="cursor-pointer text-3xl text-slate-500"
+            onclick="selectMenu(5);goToScene()"
+          >
+            > Community <
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="fadeElement3"
+        class="border-[20px] rounded-lg py-[138px] px-[100px] flex flex-col justify-center items-center opacity-0 hidden"
+      >
+        <p class="text-3xl text-white">Solana Will</p>
+        <p class="text-3xl text-white">Never Be The Same</p>
+      </div>
+    </div>
+
+    <audio id="start_opening" src="./source/start_opening.wav" preload="auto"></audio>
+    <audio id="menu_select" src="./source/menu_select.wav" preload="auto"></audio>
+    <audio id="menu_opening" src="./source/menu_opening.wav" preload="auto"></audio>
+    <audio id="bad_result" src="./source/bad_result.wav" preload="auto"></audio>
+
+    <script>
+      // screen 0 = start screen
+      // screen 1 = menu screen
+      // screen 2 = scene screen
+      let screen = 0;
+      let selected_menu = 0;
+
+      document.addEventListener("keydown", (e) => {
+        const audio = document.getElementById("menu_select");
+        if (e.key === "ArrowUp") {
+          if (selected_menu > 1) {
+            selected_menu--;
+            selectMenu(selected_menu);
+            audio.play();
+          }
+        } else if (e.key === "ArrowDown") {
+          if (selected_menu < 5) {
+            selected_menu++;
+            selectMenu(selected_menu);
+            audio.play();
+          }
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && screen === 0) {
+          start();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && screen === 1) {
+          console.log(selected_menu);
+          goToScene();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && screen === 2) {
+          goToStart();
+        }
+      });
+
+      const selectMenu = (menu) => {
+        const menus = document.querySelectorAll(".cursor-pointer");
+        menus.forEach((m, i) => {
+          if (i === menu) {
+            m.classList.remove("text-slate-500");
+            m.classList.add("text-white");
+          } else {
+            m.classList.remove("text-white");
+            m.classList.add("text-slate-500");
+          }
+        });
+      };
+
+      const goToScene = () => {
+        const audio = document.getElementById("bad_result");
+        const element2 = document.getElementById("fadeElement2");
+        const element3 = document.getElementById("fadeElement3");
+        element2.classList.remove("opacity-100");
+        element2.classList.add("opacity-0");
+        setTimeout(() => {
+          element2.classList.add("hidden");
+          element3.classList.remove("hidden");
+          setTimeout(() => {
+            element3.classList.add("opacity-100");
+            screen = 2;
+            audio.play();
+          }, 500);
+        }, 500);
+      };
+
+      const start = () => {
+        const audio = document.getElementById("menu_opening");
+        const element = document.getElementById("fadeElement1");
+        const element2 = document.getElementById("fadeElement2");
+
+        element.classList.remove("opacity-100");
+        element.classList.add("opacity-0");
+
+        setTimeout(() => {
+          element.classList.add("hidden");
+          element2.classList.remove("hidden");
+          setTimeout(() => {
+            element2.classList.add("opacity-100");
+            screen = 1;
+            audio.play();
+          }, 500);
+        }, 500);
+      };
+
+      const goToStart = () => {
+        const audio = document.getElementById("start_opening");
+        const element = document.getElementById("fadeElement3");
+        const element2 = document.getElementById("fadeElement1");
+
+        element.classList.remove("opacity-100");
+        element.classList.add("opacity-0");
+
+        setTimeout(() => {
+          element.classList.add("hidden");
+          element2.classList.remove("hidden");
+          setTimeout(() => {
+            element2.classList.add("opacity-100");
+            screen = 0;
+            audio.play();
+          }, 500);
+        }, 500);
+      };
+
+      setTimeout(() => {
+        const audio = document.getElementById("start_opening");
+        const element = document.getElementById("fadeElement1");
+        element.classList.remove("hidden");
+        setTimeout(() => {
+          element.classList.add("opacity-100");
+          audio.play();
+        }, 500);
+      }, 500);
+    </script>
+  </body>
+</html>
